@@ -10,7 +10,7 @@ task main()
 
 	while(nMotorEncoder[motorUsed] < 1024){
 		nxtDisplayCenteredTextLine(3, "%d", nMotorEncoder[motorUsed]);
-		motor[motorUsed] = 100;
+		motor[motorUsed] = 50;
 	}
 	motor[motorUsed] = 0;
 }
