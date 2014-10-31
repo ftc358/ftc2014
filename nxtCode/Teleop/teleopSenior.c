@@ -22,62 +22,81 @@ int MotorValue(float joyInput){                              //exponential funct
 	tMotorValue *= (128/pow(128, power));
 	return tMotorValue;
 }
+void initializeRobot()
+{
+  // Place code here to sinitialize servos to starting positions.
+  // Sensors are automatically configured and setup by ROBOTC. They may need a brief time to stabilize.
 
+  return;
+}
 task main()
-{	getJoystickSettings(joystick);                             //get joystick settings
-
+{
+	initializeRobot();
+	waitForStart();
+	getJoystickSettings(joystick);  															//get joystick settings
 	while(true){
 
-//////////////////////////////////////////
-//////////////////driving/////////////////
-//////////////////////////////////////////
+		//-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-//
+		//-/-/-/-/-/-/-/-/driving/-/-/-/-/-/-/-/-//
+		//-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-//
 
 
-	  if(joy1Btn(1)==1)                                        //inverse driving button
-	  	a++;
-	  	if (a%2==0){
-		if(abs(joystick.joy1_y1) > threshold){                   //normal driving
-			if(joystick.joy1_y1 > 0){
-				motor[motorL] = MotorValue(joystick.joy1_y1);
+	  if(joy1Btn(1)==1)a++;                                       //inverse driving button
+
+		//Normal Driving
+	  if (a%2==0){
+
+			//Left Stick Control
+			if(abs(joystick.joy1_y1) > threshold){
+				if(joystick.joy1_y1 > 0){
+					motor[motorL] = MotorValue(joystick.joy1_y1);
+				}else{
+					motor[motorL] = -MotorValue(joystick.joy1_y1);
+				}
 			}else{
-				motor[motorL] = -MotorValue(joystick.joy1_y1);
+				motor[motorL] = 0;
 			}
+
+			//Right Stick Control
+			if(abs(joystick.joy1_y2) > threshold){
+				if(joystick.joy1_y2 > 0){
+					motor[motorR] = MotorValue(joystick.joy1_y2);
+				}else{
+					motor[motorR] = -MotorValue(joystick.joy1_y2);
+				}
 			}else{
-			motor[motorL] = 0;
-		}
-		if(abs(joystick.joy1_y2) > threshold){
-			if(joystick.joy1_y2 > 0){
-				motor[motorR] = MotorValue(joystick.joy1_y2);
-			}else{
-				motor[motorR] = -MotorValue(joystick.joy1_y2);
-			}
+				motor[motorR] = 0;
+		 	}
+
+		 //Under Inversed Driving
 		}else{
-			motor[motorR] = 0;
-	  	}
+
+		 	//Right Stick Control
+			if(abs(joystick.joy1_y2) > threshold){
+				if(joystick.joy1_y2 > 0){
+					motor[motorL] = -MotorValue(joystick.joy1_y2);
+				}else{
+					motor[motorL] = MotorValue(joystick.joy1_y2);
+				}
+			}else{
+				motor[motorL] = 0;
+			}
+			//Left Stick Control
+			if(abs(joystick.joy1_y1) > threshold){
+				if(joystick.joy1_y1 > 0){
+						motor[motorR] = -MotorValue(joystick.joy1_y1);
+				}else{
+					motor[motorR] = MotorValue(joystick.joy1_y1);
+				}
+			}else{
+				motor[motorR] = 0;
+		  }
 	  }
-	  else {                                                    //inversed driving
-	  	if(abs(joystick.joy1_y2) > threshold){
-			if(joystick.joy1_y2 > 0){
-				motor[motorL] = -MotorValue(joystick.joy1_y2);
-			}else{
-				motor[motorL] = MotorValue(joystick.joy1_y2);
-			}
-		}else{
-			motor[motorL] = 0;
-		}
-		if(abs(joystick.joy1_y1) > threshold){
-			if(joystick.joy1_y1 > 0){
-				motor[motorR] = -MotorValue(joystick.joy1_y1);
-			}else{
-				motor[motorR] = MotorValue(joystick.joy1_y1);
-			}
-		}else{
-			motor[motorR] = 0;
-	  	}
-	  }
-	  /////////////////////////////////////////
-	  ///////////arm UP&Down///////////////////
-	  /////////////////////////////////////////
+
+		//-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-//
+		//-/-/-/-/-/-/-/-/Arm Up&Down/-/-/-/-/-/-//
+		//-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-//
+
 	  if(abs(joystick.joy2_y1) > threshold){
 			if(joystick.joy2_y1 > 0){
 				motor[armUp1] = MotorValue(joystick.joy2_y1);
@@ -91,9 +110,9 @@ task main()
 				motor[armUp2] = 0;
 		}
 
-		//////////////////////////////////////////
-		////////////Bucket Flip///////////////////
-		//////////////////////////////////////////
+		//-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-//
+		//-/-/-/-/-/-/-/-/Bucket Flip/-/-/-/-/-/-//
+		//-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-//
 
 	 	  if(abs(joystick.joy2_y2) > threshold){
 			if(joystick.joy2_y2 > 0){
@@ -108,14 +127,15 @@ task main()
 				motor[armFlip2] = 0;
 		}
 
-		///////////////////////////////////////////
-		////////////Back Arm///////////////////////
-		///////////////////////////////////////////
 
-		while(joy2btn(5)==1){                                     //put backarm up
+		//-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-//
+		//-/-/-/-/-/-/-/-/Back Arm /-/-/-/-/-/-/-//
+		//-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-//
+
+		while(joy2Btn(5)==1){                                     //put backarm up
 			motor[backArm]=100;
 		}
-		while(joy2btn(6)==1){
+		while(joy2Btn(6)==1){
 			motor[backArm]=-100;                                    //put backarm down
 		}
 
@@ -123,10 +143,10 @@ task main()
 		//////////Bucket Intake&Output/////////////
 		///////////////////////////////////////////
 
-		while(joy2btn(1)==1){                                     //intake balls
+		while(joy2Btn(1)==1){                                     //intake balls
 			motor[Bucket]=100;
 		}
-		while(joy2btn(2)==1){                                     //output balls
+		while(joy2Btn(2)==1){                                     //output balls
 			motor[Bucket]=-100;
 		}
 

@@ -1,4 +1,3 @@
-
 #pragma config(Hubs,  S1, HTMotor,  none,     none,     none)
 #pragma config(Sensor, S2,     IRseeker,       sensorNone)
 #pragma config(Motor,  mtr_S1_C1_1,     motorL,        tmotorTetrix, openLoop)
@@ -10,8 +9,8 @@ int state = 0;
 task main()
 {
 	while (state==0){
-		motor[motorL] = 10;
-		motor[motorR] = 10;
+		motor[motorL] = 5;
+		motor[motorR] = 5;
    nxtDisplayCenteredBigTextLine(3,"%d",sensorvalue(IRseeker));
 		if(SensorValue[IRseeker] == 2){
 			state++;
@@ -31,7 +30,7 @@ task main()
 	while (state==2){
 	 motor[motorL] = 0;
 	 motor[motorR] = 0;
-	nxtDisplayCenteredBigTextLine(3,"%d",sensorvalue(IRseeker));xyu
+	nxtDisplayCenteredBigTextLine(3,"%d",sensorvalue(IRseeker));
 	/*	motor[motorL] = 50;
 		motor[motorR] = 50;
 
