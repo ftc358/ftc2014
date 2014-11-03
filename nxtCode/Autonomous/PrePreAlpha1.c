@@ -11,15 +11,39 @@ string messagelol="going straight...";
 #include "C:\Users\dhou\Desktop\rdpartyrobotcdr-3.3.1\drivers\hitechnic-irseeker-v2.h"
 
 void wheel(int l, int r){
+	int oldL = motor[motorL];
+	int oldR = motor[motorR];
+	int deltaL = l-oldL;//it's an "L"
+	int deltaR = r-oldR;
+	for (int i = 0; i < 10; ++i)
+	{
+		oldL+=(deltaL/10);
+		oldR+=(deltaR/10);
+		motor[motorL]=oldL;//it's an "L"
+		motor[motorR]=oldR;
+		wait(20);
+	}
 	motor[motorL]=l;//it's an "L"
 	motor[motorR]=r;
+	return;
+}
+
+int getOffRamp(){
+	wheel(50,50);
+	wait(1500);
+	wheel(-20,20);
+	wait(500);
+	wheel(50,50);
+	wait(700);
 	return;
 }
 
 int homeInOnBeacon(){
 	int angle=5;
 	while(true){
-		if(angle < 1){
+		HTIRS2readAllDCStrength(IRseeker, dcS1, dcS2, dcS3, dcS4, dcS5);
+		angle=Sensorvalue[IRseeker];
+		if(angle < 5 & angle > 0){
 			messagelol="turning left...";
 			wheel(0,20);
 		}
@@ -35,16 +59,17 @@ int homeInOnBeacon(){
 			messagelol="No signal detected.";
 			wheel(-10,10);
 		}
+		if(dcS3 > 170){
+			wheel(0,0);
+			return 0;
+		}
 		nxtDisplayCenteredTextLine(3,"%d, %s",angle,messagelol);
-		HTIRS2readAllDCStrength(IRseeker, dcS1, dcS2, dcS3, dcS4, dcS5);
-		angle=SensorValue[IRseeker];
-		return 0;
+		nxtDisplayCenteredTextLine(4,"%s, %d","Channel 3:",dcS3);
 	}
 }
 
 task main(){
 	wait(1000);
-	while(true){
-		nxtDisplayCenteredTextLine(3,"%d, %s",sensorvalue[IRseeker],messagelol);
-	}
+	getOffRamp();
+	homeInOnBeacon();
 }

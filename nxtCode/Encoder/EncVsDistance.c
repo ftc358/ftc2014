@@ -16,7 +16,11 @@ void init(){
 void goDistance(float distance){
 	nMotorEncoder[motorR]=0;
 	while(nMotorEncoder[motorR]<(distance/wheelDiam*tpr)){
+<<<<<<< Updated upstream
 		nxtDisplayCenteredTextLine(3,"%d	,%d",nMotorEncoder[motorR],(nMotorEncoder[motorR]/tpr*wheelDiam));
+=======
+		nxtDisplayCenteredTextLine(3,"%d","%d",nMotorEncoder[motorR],(nMotorEncoder[motorR]/tpr*wheelDiam));
+>>>>>>> Stashed changes
 		motor[motorR]=speed;
 	}
 	motor[motorR]=0;
