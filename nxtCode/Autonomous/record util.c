@@ -7,10 +7,12 @@
 
 //#include "C:\Users\dhou\Desktop\rdpartyrobotcdr-3.3.1\drivers\common.h"
 //#include "C:\Users\dhou\Desktop\rdpartyrobotcdr-3.3.1\drivers\hitechnic-irseeker-v2.h"
-int state=0b00000000;
 int mode = 1;
 int dcS1, dcS2, dcS3, dcS4, dcS5 = 0;
 string messagelol="going straight...";
+int recording[1024];
+int indexNum = 0;
+int sampleRate = 100; //in ms
 
 void wheel(int l, int r){
 	int oldL = motor[motorL];
@@ -30,13 +32,22 @@ void wheel(int l, int r){
 	return;
 }
 
+void record(int t){
+	int samples = t/sampleRate;
+	for(int i=0; i<samples;i++){
+		recording[indexNum]=Sensorvalue[IRseeker];
+		indexNum++;
+		wait1Msec(sampleRate);
+	}
+}
+
 int getOffRamp(){
 	wheel(20,20);
-	wait1Msec(2750);
+	record(2750);
 	wheel(-10,10);
-	wait1Msec(1000);
+	record(1500);
 	wheel(20,20);
-	wait1Msec(1500);
+	record(1500);
 	return 0;
 }
 
@@ -70,7 +81,20 @@ void homeInOnBeacon(){
 	}
 }
 
+void reportData(){
+	while(true){
+		if(nNxtButtonPressed>-1){
+			int lineNum = 1;
+			int x,y;
+			for(int i=0; i<=indexNum; i++){
+
+				if(
+			}
+		}
+	}
+}
+
 task main(){
 	getOffRamp();
-	homeInOnBeacon();
+	reportData();
 }
