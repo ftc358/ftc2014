@@ -11,6 +11,7 @@ int mode = 1;
 int dcS1, dcS2, dcS3, dcS4, dcS5 = 0;
 string messagelol="going straight...";
 int recording[1024];
+int recording2[512]
 int indexNum = 0;
 int sampleRate = 100; //in ms
 
@@ -41,13 +42,29 @@ void record(int t){
 	}
 }
 
+void record2(int t){
+	ClearTimer(T4)
+	int dirs[2]={0,0};
+	int j = 0;
+	while(time1[T4]<t){
+		dirs[0]=dirs[1];
+		dirs[1]=Sensorvalue[IRseeker];
+		if(dirs[1]!=dirs[0]){
+			recording2[j]=dirs[0];
+			recording2[j+1]=dirs[1];
+			recording2[j+2]=time1[T4];
+			j+=3;
+		}
+	}
+}
+
 int getOffRamp(){
 	wheel(20,20);
-	record(2750);
+	record2(2750);
 	wheel(-10,10);
-	record(1500);
+	record2(1500);
 	wheel(20,20);
-	record(1500);
+	record2(1500);
 	return 0;
 }
 
@@ -88,13 +105,31 @@ void reportData(){
 			int x,y;
 			for(int i=0; i<=indexNum; i++){
 
-				if(
+				
 			}
 		}
 	}
 }
 
+void reportData2(){
+	int i=0;
+	int j=0;
+	while(true){
+		if(j>7){
+			j=0;
+			wait1Msec[5000];
+		}
+		if(recording2[i+2]==0&recording2[i+5]==0){
+			nxtDisplayCenteredTextLine(j,"***end***");
+			return;
+		}
+		nxtDisplayCenteredTextLine(j,"%d to %d: %1.3f secs",recording2[i],recording2[i+1],(recording2[i+2]/1000));
+		i+=3;
+		j++;
+	}
+}
+
 task main(){
 	getOffRamp();
-	reportData();
+	reportData2();
 }
