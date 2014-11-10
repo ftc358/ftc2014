@@ -7,13 +7,10 @@
 
 //#include "C:\Users\dhou\Desktop\rdpartyrobotcdr-3.3.1\drivers\common.h"
 //#include "C:\Users\dhou\Desktop\rdpartyrobotcdr-3.3.1\drivers\hitechnic-irseeker-v2.h"
+int state=0b00000000;
 int mode = 1;
 int dcS1, dcS2, dcS3, dcS4, dcS5 = 0;
 string messagelol="going straight...";
-int recording[1024];
-int recording2[512]
-int indexNum = 0;
-int sampleRate = 100; //in ms
 
 void wheel(int l, int r){
 	int oldL = motor[motorL];
@@ -33,35 +30,13 @@ void wheel(int l, int r){
 	return;
 }
 
-void record(int t){
-	int samples = t/sampleRate;
-	for(int i=0; i<samples;i++){
-		recording[indexNum]=Sensorvalue[IRseeker];
-		indexNum++;
-		wait1Msec(sampleRate);
-	}
-}
-
-void record2(int t){
-	ClearTimer(T4)
-	int dirs[2]={0,0};
-	int j = 0;
-	while(time1[T4]<t){
-		dirs[0]=dirs[1];
-		dirs[1]=Sensorvalue[IRseeker];
-		if(dirs[1]!=dirs[0]){
-			recording2[j]=dirs[0];
-			recording2[j+1]=dirs[1];
-			recording2[j+2]=time1[T4];
-			j+=3;
-		}
-	}
-}
-
 int getOffRamp(){
 	wheel(20,20);
-	record2(3000);
-	wheel(0,0);
+	wait1Msec(2750);
+	wheel(-10,10);
+	wait1Msec(1000);
+	wheel(20,20);
+	wait1Msec(1500);
 	return 0;
 }
 
@@ -70,21 +45,21 @@ void homeInOnBeacon(){
 	while(true){
 		//HTIRS2readAllDCStrength(IRseeker, dcS1, dcS2, dcS3, dcS4, dcS5);
 		angle=Sensorvalue[IRseeker];
-		if(angle < 5 & angle > 0){
+		if(angle < 5 & angle > 2){
 			messagelol="turning left...";
 			wheel(0,20);
 		}
-		if(angle == 5){
+		if(angle == 2){
 			messagelol="going straight.";
 			wheel(10,10);
 		}
-		if(angle > 5){
+		if(angle == 1){
 			messagelol="turning right.";
-			wheel(20,0);
+			wheel(20,10);
 		}
 		if(angle == 0){
 			messagelol="No signal detected.";
-			wheel(-10,10);
+			wheel(0,0);
 		}
 		/*if(dcS3 > 170){
 			wheel(0,0);
@@ -95,48 +70,7 @@ void homeInOnBeacon(){
 	}
 }
 
-void reportData(){
-	while(true){
-		if(nNxtButtonPressed>-1){
-			int lineNum = 1;
-			int x,y;
-			for(int i=0; i<=indexNum; i++){
-
-
-			}
-		}
-	}
-}
-
-void reportData2(){
-	int i=0;
-	int j=0;
-	while(true){
-		if(nNxtButtonPressed==1){
-			while(true){
-				if(j>7){
-					j=0;
-					wait1Msec(5000);
-				}
-				if(recording2[i+2]==0&recording2[i+5]==0){
-					nxtDisplayCenteredTextLine(j,"***end***");
-					wait1Msec(2000);
-					return;
-				}
-				nxtDisplayCenteredTextLine(j,"%d to %d: %1.3f secs",recording2[i],recording2[i+1],(float)(recording2[i+\
-
-				2]/1000.000));
-				i+=3;
-				j++;
-			}
-		}
-	}
-}
-
 task main(){
 	getOffRamp();
-	reportData2();
-	while(true){
-
-	}
+	homeInOnBeacon();
 }
