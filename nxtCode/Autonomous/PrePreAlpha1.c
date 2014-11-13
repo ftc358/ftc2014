@@ -12,7 +12,7 @@ int mode = 1;
 int dcS1, dcS2, dcS3, dcS4, dcS5 = 0;
 string messagelol="going straight...";
 
-void wheel(int l, int r){
+void wheel(int l, int r, int t){
 	int oldL = motor[motorL];
 	int oldR = motor[motorR];
 	int deltaL = l-oldL;//it's an "L"
@@ -27,17 +27,19 @@ void wheel(int l, int r){
 	}
 	motor[motorL]=l;//it's an "L"
 	motor[motorR]=r;
+	wait1Msec(t);
 	return;
 }
 
 int getOffRamp(){
-	wheel(20,20);
-	wait1Msec(2750);
-	wheel(-10,10);
-	wait1Msec(1000);
-	wheel(20,20);
-	wait1Msec(1500);
+	wheel(20,20,2750);
+	wheel(-10,10,1000);
+	wheel(20,20,1500);
 	return 0;
+}
+
+int kickStand(){
+	wheel(20,20,
 }
 
 void homeInOnBeacon(){
@@ -47,19 +49,19 @@ void homeInOnBeacon(){
 		angle=Sensorvalue[IRseeker];
 		if(angle < 5 & angle > 0){
 			messagelol="turning left...";
-			wheel(0,20);
+			wheel(0,20,0);
 		}
 		if(angle == 5){
 			messagelol="going straight.";
-			wheel(10,10);
+			wheel(10,10,0);
 		}
 		if(angle > 5){
 			messagelol="turning right.";
-			wheel(20,0);
+			wheel(20,0,0);
 		}
 		if(angle == 0){
 			messagelol="No signal detected.";
-			wheel(-10,10);
+			wheel(-10,10,0);
 		}
 		/*if(dcS3 > 170){
 			wheel(0,0);
@@ -71,6 +73,7 @@ void homeInOnBeacon(){
 }
 
 task main(){
-	getOffRamp();
+	//getOffRamp();
+	kickStand();
 	homeInOnBeacon();
 }

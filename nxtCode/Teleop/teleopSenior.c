@@ -1,5 +1,7 @@
 #pragma config(Hubs,  S1, HTMotor,  HTMotor,  HTMotor,  HTMotor)
 #pragma config(Sensor, S1,     ,               sensorI2CMuxController)
+#pragma config(Motor,  motorA,          A,             tmotorNXT, PIDControl, encoder)
+#pragma config(Motor,  motorB,          B,             tmotorNXT, PIDControl, encoder)
 #pragma config(Motor,  mtr_S1_C1_1,     motorL,        tmotorTetrix, openLoop, reversed)
 #pragma config(Motor,  mtr_S1_C1_2,     motorR,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C2_1,     armUp1,        tmotorTetrix, openLoop)
@@ -116,11 +118,11 @@ task main()
 
 	 	  if(abs(joystick.joy2_y2) > threshold){
 			if(joystick.joy2_y2 > 0){
-				motor[armFlip1] = MotorValue(joystick.joy2_y2);
-				motor[armFlip2] = MotorValue(joystick.joy2_y2);
+				motor[armFlip1] = 0.2*MotorValue(joystick.joy2_y2);
+				motor[armFlip2] = 0.2*MotorValue(joystick.joy2_y2);
 			}else{
-				motor[armFlip1] = -MotorValue(joystick.joy2_y2);
-				motor[armFlip2] = -MotorValue(joystick.joy2_y2);
+				motor[armFlip1] = -0.2*MotorValue(joystick.joy2_y2);
+				motor[armFlip2] = -0.2*MotorValue(joystick.joy2_y2);
 			}
 			}else{                                                  //stop arm from moving
 				motor[armFlip1] = 0;
@@ -143,12 +145,16 @@ task main()
 		//////////Bucket Intake&Output/////////////
 		///////////////////////////////////////////
 
-		while(joy2Btn(1)==1){                                     //intake balls
-			motor[Bucket]=100;
+		while(joy1Btn(5)==1){                                     //intake balls
+			motor[A]=100;
+			motor[B]=100;
 		}
-		while(joy2Btn(2)==1){                                     //output balls
-			motor[Bucket]=-100;
+		while(joy1Btn(6)==1){                                     //output balls
+			motor[A]=-100;
+			motor[B]=-100;
 		}
+		motor[A]=0;
+		motor[B]=0;
 
 
 	}
