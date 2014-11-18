@@ -25,7 +25,7 @@ int MotorValue(float joyInput){                              //exponential funct
 }
 void initializeRobot()
 {
-	// Place code here to sinitialize servos to starting positions.
+	// Place code here to initialize servos to starting positions.
 	// Sensors are automatically configured and setup by ROBOTC. They may need a brief time to stabilize.
 
 	return;
@@ -63,9 +63,9 @@ task main()
 			}
 
 				if(abs(joystick.joy2_y2) > threshold){
-			servo[servoL]=128+joystick.joy2_y2;}
+			servo[servoR]=128+joystick.joy2_y2;}
 			else{
-				servo[servoL] = 128;
+				servo[servoR] = 128;
 			}
 		}
 	}
