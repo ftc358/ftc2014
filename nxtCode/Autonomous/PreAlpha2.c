@@ -11,7 +11,10 @@
 #pragma config(Motor,  mtr_S1_C4_1,     motorJ,        tmotorTetrix, openLoop)
 #pragma config(Motor,  mtr_S1_C4_2,     Bucket,        tmotorTetrix, openLoop)
 
-int a1,a2,b1,b2,b3,b4,b5 = 0;
+int values[8]; //7=increment,0-6= wheel times
+int selection; //0-6 values, 7 run, 8 unrun, 9 increment
+char selects[20]; //0-13 values, 14-15 run, 16-17 unrun, 18-19 increment
+int lastrun =0;
 
 void wheel(int l, int r, int t){
 	int oldL = motor[motorL];
@@ -45,29 +48,120 @@ int determinePos(){
 
 void kickStand(int x){
 	if(x==1){
-		wheel(30,30,a1);
-		wheel(-90,90,a2);
+		wheel(30,30,values[0]);
+		wheel(-90,90,values[1]);
 	}else if(x==2){
-		wheel(30,30,b1);
-		wheel(70,-70,b2);
-		wheel(30,30,b3);
-		wheel(-70,70,b4);
-		wheel(75,75,b5);
+		wheel(30,30,values[2]);
+		wheel(70,-70,values[3]);
+		wheel(30,30,values[4]);
+		wheel(-70,70,values[5]);
+		wheel(75,75,values[6]);
 	}
 }
 
+void unKickStand(){
+	wait1Msec(1000);
+	wheel(-75,-75,values[6]);
+	wheel(70,-70,values[5]);
+	wheel(-30,-30,values[4]);
+	wheel(-70,70,values[3]);
+	wheel(-30,-30,values[2]);
+}
+
 void defaultsPlz(){
-	a1=500;
-	a2=800;
-	b1=500;
-	b2=2000;
-	b3=600;
-	b4=1000;
-	b5=1600;
+	values[0]=100;
+	values[0]=500;
+	values[1]=800;
+	values[2]=500;
+	values[3]=2000;
+	values[4]=600;
+	values[5]=1000;
+	values[6]=1600;
+	setSelects(7,false);
+}
+
+void setSelects(int x,bool y){
+	x*=2; //selections are zero indexed!!!
+	for(var i=0;i<18;i++){
+		selects[i]=' ';
+		if(y){
+			if(i==x)selects[i]='>';
+			if(i==x+1)selects[i]='<';
+		}else{
+			if(i==x)selects[i]='[';
+			if(i==x+1)selects[i]=']';
+		}
+	}
+}
+
+void refreshScreen(){
+	nxtDisplayCenteredTextLine(1,"%c30,30,%d%c   %c-90,90,%d%c",selects[0],values[0],selects[1],selects[2],values[1],selects[3]);
+	nxtDisplayCenteredTextLine(2,"%c30,30,%d%c   %c70,-70,%d%c",selects[4],values[2],selects[5],selects[6],values[3],selects[7]);
+	nxtDisplayCenteredTextLine(3,"%c30,30,%d%c   %c70,-70,%d%c",selects[8],values[4],selects[9],selects[10],values[5],selects[11]);
+	nxtDisplayCenteredTextLine(4,"%c75,75,%d%c",selects[12],values[6],selects[13]);
+	nxtDisplayCenteredTextLine(5,"%cRUN!%c",selects[14],selects[15]);
+	nxtDisplayCenteredTextLine(6,"%cUNRUN!%c",selects[16],selects[17]);
+	nxtDisplayCenteredTextLine(7,"%cTweak Increment: %d%c",selects[18],values[7],selects[19]);
+}
+
+void tweakVal(){
+	while(true){
+		if(nNxtButtonPressed == 1) values[selection]+=values[7];
+		if(nNxtButtonPressed == 2) values[selection]-=values[7];
+		if(values[selection]>1000000) values[selection]=1000000;
+		if(values[selection]<1) values[selection]=1;
+		refreshScreen();
+		if(nNxtButtonPressed == 3) return;
+	}
+}
+
+void tweakIncrement(){
+	while(true){
+		if(nNxtButtonPressed == 1){
+			values[7]*=10;
+			if(values[selection]>100000) values[selection]=100000;
+			refreshScreen();
+		}
+		if(nNxtButtonPressed == 2){
+			values[7]/=10;
+			if(values[selection]<1) values[selection]=1;
+			refreshScreen();
+		}
+		if(nNxtButtonPressed == 3) return;
+	}
 }
 
 void runTests(){
-
+	refreshScreen();
+	while(true){
+		nxtDisplayCenteredTextLine(0,"IR Value = %d",SensorValue[IRSeeker]);
+		if(nNxtButtonPressed == 3 & selection==7){
+			lastrun=determinePos();
+			kickStand(lastrun);
+		}
+		if(nNxtButtonPressed == 3 & selection==8){
+			unKickStand(lastrun);
+		}
+		if(nNxtButtonPressed == 3 & selection<7 & selection>=0){
+			setSelects(selection,true);
+			tweakVal();
+		}
+		if(nNxtButtonPressed == 3 & selection==9){
+			tweakIncrement();
+		}
+		if(nNxtButtonPressed == 1){
+			selection++;
+			if(selection>9)selection=0;
+			setSelects(selection,false);
+			refreshScreen();
+		}
+		if(nNxtButtonPressed == 2){
+			selection--;
+			if(selection<0)selection=9;
+			setSelects(selection,false);
+			refreshScreen();
+		}
+	}
 }
 
 task main(){

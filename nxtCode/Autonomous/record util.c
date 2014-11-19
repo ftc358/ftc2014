@@ -112,6 +112,7 @@ void reportData2(){
 	int i=0;
 	int j=0;
 	while(true){
+<<<<<<< Updated upstream
 		if(nNxtButtonPressed==1){
 			while(true){
 				if(j>7){
@@ -129,6 +130,15 @@ void reportData2(){
 				i+=3;
 				j++;
 			}
+=======
+		if(j>7){
+			j=0;
+			wait1Msec[5000];
+		}
+		if(recording2[i+2]==0&recording2[i+5]==0){
+			nxtDisplayCenteredTextLine(j,"***end***angle");
+			return;
+>>>>>>> Stashed changes
 		}
 	}
 }
