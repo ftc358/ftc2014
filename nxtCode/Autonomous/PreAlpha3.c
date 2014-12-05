@@ -169,8 +169,16 @@ void runTests(){
 		}
 	}
 }
+	void startfromramp(){
+		wheel(50,50,5000);
+		motor[armFlip1]=50;
+		wait1Msec(2000);
+		motor[backArm]=50;
+		wait1Msec(2000);
+		wheel(-50,-60,1000);
+		wheel(-80,-80,3000);
+	}
 
 task main(){
-	defaultsPlz();
-	runTests();
+	startfromramp();
 }
