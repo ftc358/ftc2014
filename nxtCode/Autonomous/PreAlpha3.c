@@ -170,13 +170,11 @@ void runTests(){
 	}
 }
 	void startfromramp(){
-		wheel(50,50,5000);
-		motor[armFlip1]=50;
-		wait1Msec(2000);
-		motor[backArm]=50;
-		wait1Msec(2000);
-		wheel(-50,-60,1000);
-		wheel(-80,-80,3000);
+		wait
+		wheel(80,80,2000);
+		wheel(-20,70,2000);
+		wheel(50,50,1000);
+		wheel(0,0,0);
 	}
 
 task main(){

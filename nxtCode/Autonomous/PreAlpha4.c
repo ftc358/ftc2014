@@ -110,7 +110,7 @@ void tweakVal(){
 		if(nNxtButtonPressed == 1) values[selection]+=values[7];
 		if(nNxtButtonPressed == 2) values[selection]-=values[7];
 		if(values[selection]>1000000) values[selection]=1000000;
-		if(values[selection]<1) values[selection]=1;
+		if(values[selection]<0) values[selection]=0;
 		refreshScreen();
 		wait1Msec(300);
 		if(nNxtButtonPressed == 3) return;
@@ -127,7 +127,7 @@ void tweakIncrement(){
 		}
 		if(nNxtButtonPressed == 2){
 			values[7]/=10;
-			if(values[selection]<1) values[selection]=1;
+			if(values[selection]<0) values[selection]=0;
 			refreshScreen();
 			wait1Msec(300);
 		}
