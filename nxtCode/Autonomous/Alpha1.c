@@ -39,6 +39,7 @@ void wheel(int l, int r, int t){
 
 void turn(int x,int v){
 	int old=SensorValue[Compass];
+	int circles=x/360;
 	if(x<0){
 		wheel(-v,v,0);
 	}else if(x>0){
@@ -46,9 +47,15 @@ void turn(int x,int v){
 	}else{
 		return;
 	}
-	int new=old+x;
-	new=new%360;
-	while(sensorValue[Compass]!=new){
+	old=(old+x)%360;
+	if(old<0)old+=360;
+	while(SensorValue[Compass]>(old+5)|SensorValue[Compass]<(old-5)|circles!=0){
+		nxtDisplayCenteredBigTextLine(0,"%d",SensorValue[Compass]);
+		nxtDisplayCenteredBigTextLine(2,"%d",old);
+		if(SensorValue[Compass]>(old+5)|SensorValue[Compass]<(old-5)){
+			circles--;
+			while(SensorValue[Compass]<(old+5)&SensorValue[Compass]>(old-5)){}
+		}
 	}
 	return;
 }
@@ -67,13 +74,16 @@ int determinePos(){
 void kickStand(int x){
 	if(x==1){
 		wheel(30,30,values[0]);
-		wheel(-90,90,values[1]);
+		turn(1440,100);
+		//wheel(-90,90,values[1]);
 	}else if(x==2){
 		wheel(30,30,values[2]);
-		wheel(70,-70,values[3]);
+		turn(90,70);
+		//wheel(70,-70,values[3]);
 		wheel(30,30,values[4]);
-		wheel(-70,70,values[5]);
-		wheel(75,75,values[6]);
+		turn(-90,70);
+		//wheel(-70,70,values[5]);
+		wheel(50,50,values[6]);
 	}
 }
 
@@ -187,16 +197,31 @@ void runTests(){
 		}
 	}
 }
-	void startfromramp(){
-		wheel(50,50,5000);
-		motor[armFlip1]=50;
-		wait1Msec(2000);
-		motor[backArm]=50;
-		wait1Msec(2000);
-		wheel(-50,-60,1000);
-		wheel(-80,-80,3000);
-	}
+void startfromramp(){
+	wheel(50,50,5000);
+	motor[armFlip1]=50;
+	wait1Msec(2000);
+	motor[backArm]=50;
+	wait1Msec(2000);
+	wheel(-50,-60,1000);
+	wheel(-80,-80,3000);
+}
 
 task main(){
-	startfromramp();
+	determinePos();
+	runTests();
 }
+
+/*
+task main(){
+	//startfromramp();
+	wheel(50,50,500);
+	turn(90,75);
+	turn(-90,40);
+	turn(180,50);
+	turn(-270,100);
+	turn(90,60);
+	wheel(-50,-50,500);
+	wheel(0,0,0);
+}
+*/
