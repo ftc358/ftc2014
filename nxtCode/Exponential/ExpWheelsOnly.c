@@ -8,7 +8,7 @@
 
 int threshold = 3;
 int armThreshold = 3;
-float power = 2.5;
+float power = 2.25;
 
 int MotorValue(float joyInput){
 	float tInputV = abs(joyInput);
