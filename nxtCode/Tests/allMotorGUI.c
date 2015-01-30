@@ -47,16 +47,28 @@ int determinePos(){
 }
 
 void kickStand(int x){
-	if(x==1){
-		wheel(30,30,values[0]);
-		wheel(-90,90,values[1]);
-	}else if(x==2){
-		wheel(30,30,values[2]);
-		wheel(70,-70,values[3]);
-		wheel(30,30,values[4]);
-		wheel(-70,70,values[5]);
-		wheel(75,75,values[6]);
+
+	motor[A]=values[0];
+	motor[B]=values[0];                                                      //nxt motors A&B
+	motor[armUp1]=values[1];
+	motor[armUp2]=values[1];
+	motor[motorL]=values[2];
+	motor[motorR]=values[3];
+	motor[armFlip1]=values[4];
+	motor[backArm]=values[5];
+	motor[Bucket]=values[6];
+	while(nNxtButtonPressed==3){
 	}
+	motor[A]=0;
+	motor[B]=0;                                                      //nxt motors A&B
+	motor[armUp1]=0;
+	motor[armUp2]=0;
+	motor[motorL]=0;
+	motor[motorR]=0;
+	motor[armFlip1]=0;
+	motor[backArm]=0;
+	motor[Bucket]=0;
+	return;
 }
 
 void unKickStand(){
@@ -84,22 +96,22 @@ void setSelects(int x,bool y){
 }
 
 void defaultsPlz(){
-	values[7]=100;
-	values[0]=500;
-	values[1]=800;
-	values[2]=500;
-	values[3]=2000;
-	values[4]=600;
-	values[5]=1000;
-	values[6]=1600;
+	values[7]=10;
+	values[0]=50;
+	values[1]=50;
+	values[2]=50;
+	values[3]=50;
+	values[4]=50;
+	values[5]=50;
+	values[6]=50;
 	setSelects(7,false);
 }
 
 void refreshScreen(){
-	nxtDisplayCenteredTextLine(1,"%c3,%d%c   %c-+9,%d%c",selects[0],values[0],selects[1],selects[2],values[1],selects[3]);
-	nxtDisplayCenteredTextLine(2,"%c3,%d%c   %c+-7,%d%c",selects[4],values[2],selects[5],selects[6],values[3],selects[7]);
-	nxtDisplayCenteredTextLine(3,"%c3,%d%c   %c+-7,%d%c",selects[8],values[4],selects[9],selects[10],values[5],selects[11]);
-	nxtDisplayCenteredTextLine(4,"%c7,%d%c",selects[12],values[6],selects[13]);
+	nxtDisplayCenteredTextLine(1,"%cAB,%d%c   %cArm,%d%c",selects[0],values[0],selects[1],selects[2],values[1],selects[3]);
+	nxtDisplayCenteredTextLine(2,"%cL,%d%c   %cR,%d%c",selects[4],values[2],selects[5],selects[6],values[3],selects[7]);
+	nxtDisplayCenteredTextLine(3,"%cFlp,%d%c   %cBak,%d%c",selects[8],values[4],selects[9],selects[10],values[5],selects[11]);
+	nxtDisplayCenteredTextLine(4,"%cBucket,%d%c",selects[12],values[6],selects[13]);
 	nxtDisplayCenteredTextLine(5,"%cRUN!%c",selects[14],selects[15]);
 	nxtDisplayCenteredTextLine(6,"%cUNRUN!%c",selects[16],selects[17]);
 	nxtDisplayCenteredTextLine(7,"%cIncrement: %d%c",selects[18],values[7],selects[19]);
@@ -107,12 +119,18 @@ void refreshScreen(){
 
 void tweakVal(){
 	while(true){
-		if(nNxtButtonPressed == 1) values[selection]+=values[7];
-		if(nNxtButtonPressed == 2) values[selection]-=values[7];
-		if(values[selection]>1000000) values[selection]=1000000;
-		if(values[selection]<1) values[selection]=1;
-		refreshScreen();
-		wait1Msec(300);
+		if(nNxtButtonPressed == 1){
+			values[selection]+=values[7];
+			if(values[selection]>100) values[selection]=100;
+			refreshScreen();
+			wait1Msec(300);
+		}
+		if(nNxtButtonPressed == 2){
+			values[selection]-=values[7];
+			if(values[selection]<1) values[selection]=1;
+			refreshScreen();
+			wait1Msec(300);
+		}
 		if(nNxtButtonPressed == 3) return;
 	}
 }
@@ -121,7 +139,7 @@ void tweakIncrement(){
 	while(true){
 		if(nNxtButtonPressed == 1){
 			values[7]*=10;
-			if(values[selection]>100000) values[selection]=100000;
+			if(values[selection]>100) values[selection]=100;
 			refreshScreen();
 			wait1Msec(300);
 		}
@@ -137,7 +155,6 @@ void tweakIncrement(){
 
 void runTests(){
 	refreshScreen();
-	kickStand(determinePos());
 	while(true){
 		nxtDisplayCenteredTextLine(0,"IR Value = %d",SensorValue[IRSeeker]);
 		if(nNxtButtonPressed == 3 & selection==7){
@@ -150,11 +167,16 @@ void runTests(){
 		if(nNxtButtonPressed == 3 & selection<7 & selection>=0){
 			setSelects(selection,true);
 			tweakVal();
-			wait1Msec(300);
+			setSelects(selection,false);
+			refreshScreen();
+			wait1Msec(400);
 		}
 		if(nNxtButtonPressed == 3 & selection==9){
+			setSelects(selection,true);
 			tweakIncrement();
-			wait1Msec(300);
+			setSelects(selection,false);
+			refreshScreen();
+			wait1Msec(400);
 		}
 		if(nNxtButtonPressed == 1){
 			selection++;
