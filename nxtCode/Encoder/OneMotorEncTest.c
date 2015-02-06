@@ -25,10 +25,11 @@ void wheel(int l, int r, int t, bool accelerate=true){
 }
 
 int speed=100;
-int target=5760;
+int target=46080;
 
 task main()
 {
+	target=
 	nMotorEncoder[motorR] = 0;
 	for(int i=-2;i!=256;i*=(-2)){
 		wheel(0,speed,0)
