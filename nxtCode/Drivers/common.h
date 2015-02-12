@@ -72,7 +72,13 @@
 #warn "sensor checking disabled, I hope you know what you are doing!"
 #endif
 
+#ifndef COMPILED_OFFLINE
 #include "firmwareVersion.h"
+#else
+#include "Includes/firmwareVersion.h"
+#endif
+
+//#include "firmwareVersion.h"
 #if (kRobotCVersionNumeric < 359)
 #error "These drivers are only supported on RobotC version 3.59 or higher"
 #endif

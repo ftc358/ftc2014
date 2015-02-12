@@ -196,7 +196,7 @@ void gturn2(int x,int v){
 		return;
 	}
 	int p=1;
-	for(int i=0;i<3;i++){
+	for(int i=0;i<4;i++){
 		while(((p*abs(turned))<(p*abs(x)))&((time1[T4]-lastTime2)<4000)) {
 			value = SensorValue[Gyro];
 			if(abs(value)<2)value=-gOffset;
@@ -354,16 +354,6 @@ void runTests(){
 	}
 }
 
-void startfromramp(){
-	wheel(50,50,5000);
-	motor[armFlip]=50;
-	wait1Msec(2000);
-	motor[backArm]=50;
-	wait1Msec(2000);
-	wheel(-50,-60,1000);
-	wheel(-80,-80,3000);
-}
-
 void reach(int x){ //input actual height: 30, 60, 90, 120
 	switch(x){
 		case 120:
@@ -392,46 +382,53 @@ void reach(int x){ //input actual height: 30, 60, 90, 120
 void score(int x){
 	if(x==1){
 		encoder(58,100);
-		gturn(90,80);
+		gturn2(90,80);
 		encoder(80,100);
-		gturn(-90,80);
+		gturn2(-90,80);
 		encoder(86,100);
-		gturn(-90,80);
+		gturn2(-90,80);
 		encoder(18,50);
 		reach(120);
 		encoder(-18,-50);
-		gturn(90,80);
+		gturn2(90,80);
 		encoder(80,100);
-		gturn(-135,80);
+		gturn2(-135,80);
 		encoder(-60,-100);
 		servo[backArm]=127;
 		wait1Msec(1500);
 		encoder(60,100);
-		gturn(-45,80);
+		gturn2(-45,80);
 		encoder(126,100);
-		gturn(90,80);
+		gturn2(90,80);
 		encoder(85,100);
-		gturn(-90,80);
+		gturn2(-90,80);
 		encoder(97,100);
-		gturn(90,80);
+		gturn2(90,80);
 	}else if(x==2){
 		encoder(72,100);
 		reach(120);
 		encoder(-41,-100);
-		gturn(90,80);
+		gturn2(90,80);
 		encoder(51,100);
-		gturn(-90,80);
+		gturn2(-90,80);
 		encoder(170,100);
-		gturn(-135,80);
+		gturn2(-135,80);
 		encoder(-83,-50);
 		servo[backArm]=127;
 		wait1Msec(1500);
 		encoder(83,100);
-		gturn(-45,80);
+		gturn2(-45,80);
 		encoder(199,100);
-		gturn(90,80);
+		gturn2(90,80);
 		encoder(58,100);
 	}
+}
+
+void startfromramp(){
+	wheel(80,80,2000);
+	wheel(-20,70,2000);
+	wheel(50,50,1000);
+	wheel(0,0,0);
 }
 
 void initializeRobot()//9096679161,444
@@ -449,5 +446,5 @@ void initializeRobot()//9096679161,444
 task main(){
 	initializeRobot();
 	waitForStart();
-	score(determinePos());
+	startfromramp();
 }
