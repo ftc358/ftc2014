@@ -195,9 +195,9 @@ void gturn2(int x,int v){
 		}else{
 		return;
 	}
-	int p=1;
+	int p=1; // polarity, to converge toward a position
 	for(int i=0;i<3;i++){
-		while(((p*abs(turned))<(p*abs(x)))&((time1[T4]-lastTime2)<4000)) {
+		while(((p*abs(turned))<(p*abs(x)))&((time1[T4]-lastTime2)<3000)) {
 			value = SensorValue[Gyro];
 			if(abs(value)<2)value=-gOffset;
 			turned+=(float)(value-gOffset)*720.0*(float)(time1(T4)-lastTime)*multiplier/1023000.0;
@@ -210,18 +210,17 @@ void gturn2(int x,int v){
 		wheel(0,0,0,false);
 		wait1Msec(200);
 		p*=-1;
-		v=v*-4/7;
+		v=v*-5/7;
 		lastTime2=time1[T4];
 	}
 	return;
 }
 
 int determinePos(){
-	wait1Msec(1000);
 	while(true){
-		if(SensorValue[IRSeeker]==0|SensorValue[IRSeeker]==7){
+		if(SensorValue[IRSeeker]==0|SensorValue[IRSeeker]==7){ //two beacons perpendicular to robot heading
 			return 1;
-			}else if(SensorValue[IRSeeker]==5){
+			}else if(SensorValue[IRSeeker]==5){ //one beacon right in front of robot. parallel or diagonal
 			return 2;
 		}
 	}
@@ -280,9 +279,9 @@ void defaultsPlz(){
 }
 
 void refreshScreen(){
-	nxtDisplayCenteredTextLine(1,"%c3,%d%c   %c-+9,%d%c",selects[0],values[0],selects[1],selects[2],values[1],selects[3]);
-	nxtDisplayCenteredTextLine(2,"%c3,%d%c   %c+-7,%d%c",selects[4],values[2],selects[5],selects[6],values[3],selects[7]);
-	nxtDisplayCenteredTextLine(3,"%c3,%d%c   %c+-7,%d%c",selects[8],values[4],selects[9],selects[10],values[5],selects[11]);
+	nxtDisplayCenteredTextLine(1,"%c3,%d%c%c-+9,%d%c",selects[0],values[0],selects[1],selects[2],values[1],selects[3]);
+	nxtDisplayCenteredTextLine(2,"%c3,%d%c%c+-7,%d%c",selects[4],values[2],selects[5],selects[6],values[3],selects[7]);
+	nxtDisplayCenteredTextLine(3,"%c3,%d%c%c+-7,%d%c",selects[8],values[4],selects[9],selects[10],values[5],selects[11]);
 	nxtDisplayCenteredTextLine(4,"%c7,%d%c",selects[12],values[6],selects[13]);
 	nxtDisplayCenteredTextLine(5,"%cRUN!%c",selects[14],selects[15]);
 	nxtDisplayCenteredTextLine(6,"%cUNRUN!%c",selects[16],selects[17]);
@@ -390,7 +389,7 @@ void reach(int x){ //input actual height: 30, 60, 90, 120
 }
 
 void score(int x){
-	if(x==1){
+	if(x==1){ // center thingy in front of robot horizontally
 		encoder(58,100);
 		gturn(90,80);
 		encoder(80,100);
@@ -404,7 +403,7 @@ void score(int x){
 		encoder(80,100);
 		gturn(-135,80);
 		encoder(-60,-100);
-		servo[backArm]=127;
+		servo[backArm]=255;
 		wait1Msec(1500);
 		encoder(60,100);
 		gturn(-45,80);
@@ -414,7 +413,7 @@ void score(int x){
 		gturn(-90,80);
 		encoder(97,100);
 		gturn(90,80);
-	}else if(x==2){
+	}else if(x==2){ // one beacon directly in front of robotasdf
 		encoder(72,100);
 		reach(120);
 		encoder(-41,-100);
@@ -424,7 +423,7 @@ void score(int x){
 		encoder(170,100);
 		gturn(-135,80);
 		encoder(-83,-50);
-		servo[backArm]=127;
+		servo[backArm]=255;
 		wait1Msec(1500);
 		encoder(83,100);
 		gturn(-45,80);
@@ -434,15 +433,14 @@ void score(int x){
 	}
 }
 
-void initializeRobot()//9096679161,444
-{
+void initializeRobot()//9096679161,444{
 	calibrateGyro(256);
 	for(int i=0;i<10;i++){
 		nxtDisplayCenteredBigTextLine(0,"%d",value);
 		nxtDisplayCenteredBigTextLine(2,"%d",(value-gOffset));
 		wait1Msec(100);
 	}
-	servo[backArm]=-95;
+	servo[backArm]=127;
 	return;
 }
 
