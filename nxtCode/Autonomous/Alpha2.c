@@ -433,7 +433,7 @@ void score(int x){
 	}
 }
 
-void initializeRobot()//9096679161,444{
+void initializeRobot(){//9096679161,444
 	calibrateGyro(256);
 	for(int i=0;i<10;i++){
 		nxtDisplayCenteredBigTextLine(0,"%d",value);
